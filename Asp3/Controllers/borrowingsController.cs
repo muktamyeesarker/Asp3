@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,13 +20,25 @@ namespace Asp3.Controllers
         }
 
         // GET: borrowings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-              return _context.borrowing != null ? 
-                          View(await _context.borrowing.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.borrowing'  is null.");
-        }
+            var borrowings = _context.borrowing.AsQueryable(); // Start with all borrowings
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                // Retrieve the names of readers whose IDs match the ReaderId in borrowings
+                var readerNames = await _context.Readers
+                    .Where(r => borrowings.Select(b => b.ReaderId).Contains(r.Id))
+                    .Where(r => r.Name.Contains(searchString))
+                    .Select(r => r.Name)
+                    .ToListAsync();
+
+                // Filter borrowings based on the names of readers found
+                borrowings = borrowings.Where(b => readerNames.Contains(b.ReaderId.ToString()));
+            }
+
+            return View(await borrowings.ToListAsync());
+        }
         // GET: borrowings/Details/5
         public async Task<IActionResult> Details(int? id)
         {

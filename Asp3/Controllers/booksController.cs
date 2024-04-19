@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,13 +20,19 @@ namespace Asp3.Controllers
         }
 
         // GET: books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-              return _context.book != null ? 
-                          View(await _context.book.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.book'  is null.");
-        }
+            var books = from b in _context.book select b;
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b => b.Title.Contains(searchString)
+                                        || b.Author.Contains(searchString)
+                                        || b.Genre.Contains(searchString));
+            }
+
+            return View(await books.ToListAsync());
+        }
         // GET: books/Details/5
         public async Task<IActionResult> Details(int? id)
         {

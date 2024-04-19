@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Asp3.Models.borrowing>
+@model IEnumerable<Asp3.Models.borrowing>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index" method="get">
+    <p>
+        <input type="text" name="searchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+
 <table class="table">
     <thead>
         <tr>

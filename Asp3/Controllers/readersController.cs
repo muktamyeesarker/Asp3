@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,12 +19,20 @@ namespace Asp3.Controllers
             _context = context;
         }
 
-        // GET: readers
-        public async Task<IActionResult> Index()
+        //GET
+        public async Task<IActionResult> Index(string searchString)
         {
-              return _context.reader != null ? 
-                          View(await _context.reader.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.reader'  is null.");
+            var readers = from r in _context.reader select r;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                readers = readers.Where(r => r.Name.Contains(searchString)
+                                            || r.Email.Contains(searchString)
+                                            || r.Id.ToString().Contains(searchString)
+                                            || r.PhoneNumber.Contains(searchString));
+            }
+
+            return View(await readers.ToListAsync());
         }
 
         // GET: readers/Details/5

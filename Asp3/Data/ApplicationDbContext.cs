@@ -12,6 +12,7 @@ namespace Asp3.Data
         }
         public DbSet<Asp3.Models.book>? book { get; set; }
         public DbSet<Asp3.Models.borrowing>? borrowing { get; set; }
+        
         public DbSet<Asp3.Models.reader>? reader { get; set; }
         public DbSet<Asp3.Models.reader>? Readers { get; set; }
     }
